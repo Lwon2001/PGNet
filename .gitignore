@@ -1,0 +1,32 @@
+.history/
+.vscode/
+*.pyc
+__pycache__/
+
+*.png
+*.jpg
+
+# Build artifacts for pointnet2 extension
+extensions/pointnet2_ops_lib/build/
+
+# Compiled objects / shared libraries
+*.o
+*.so
+*.pyd
+*.dll
+
+# Ninja build files
+*.ninja_deps
+*.ninja_log
+build.ninja
+
+# Python packaging / extension build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+data
+output
+

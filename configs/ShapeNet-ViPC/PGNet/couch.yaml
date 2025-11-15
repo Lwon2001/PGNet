@@ -1,0 +1,81 @@
+# Dataset Configuration
+dataset:
+  category: 'couch'
+  data_path: '/home/ubuntu/data/projects/MMPC/data/ShapeNetViPC-Dataset'
+  sampling_method: 'poisson_disk'
+  gen_points: 2048
+  preload_pc: false
+  debug_subset_ratio: 1
+  fine_points: 2048
+  normalize_gen: true
+
+# Model Configuration
+model:
+  name: 'PGNet'  # Using the new simplified model
+  num_coarse_pc: 512
+  feat_dim: 256  # Unified low-dimension feature space
+  
+  # Config for the generative encoder
+  gen_encoder:
+    embed_dim: 768
+    num_heads: 6
+    mlp_ratio: 2
+    drop_rate: 0
+    pos_embed: 'relative' # GenEncoder uses no positional embedding by default
+    dgcnn_k_values: [16, 16, 16, 16]
+
+  # Config for the partial encoder
+  partial_encoder:
+    embed_dim: 768
+    num_heads: 6
+    mlp_ratio: 2
+    drop_rate: 0
+    pos_embed: 'relative' # PartialEncoder uses relative positional embedding
+    dgcnn_k_values: [16, 16, 16, 16]
+
+  # Cross attention for global feature fusion and coarse prediction
+  cross_attention:
+    nhead: 4
+    dropout: 0.0
+
+  # Decoder parameters
+  decoder:
+    up_factors: [2, 2]
+    k_interp: 8
+
+# Training Configuration
+training:
+  global_batch_size: 192
+  gradient_accumulation_steps: 2
+  max_steps: 100000
+  eval_steps: 2000
+  learning_rate: 2e-4
+  optimizer: 'adamw'
+  
+  loss_weights: [0.333, 0.333, 0.333] # [coarse, intermediate_1, ..., fine]
+
+  grad_clip:
+    enabled: true
+    max_norm: 1.0
+  
+  optimizer_params:
+    weight_decay: 0.01
+    adamw_beta1: 0.9
+    adamw_beta2: 0.999
+  
+  lr_scheduler: 'cosine'
+  warmup_steps: 5000
+  cosine_eta_min: 1e-5
+
+  nccl_timeout: 7200
+
+# Hardware Configuration
+hardware:
+  num_workers: 4
+
+# Output Configuration
+output:
+  base_path: 'output'
+  checkpoint_dir: 'checkpoints'
+  log_dir: 'logs'
+  config_dir: 'configs' 
