@@ -4,10 +4,6 @@
   <a href="https://arxiv.org/abs/XXXX.XXXXX">
     <img src="https://img.shields.io/badge/arXiv-Paper-red?logo=arxiv&logoColor=white" alt="arXiv">
   </a>
-  <!-- TODO: Replace with the real Hugging Face Demo link -->
-  <a href="https://huggingface.co/spaces/XXX/XXX">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Live_Demo-blue" alt="Hugging Face">
-  </a>
 </p>
 
 
