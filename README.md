@@ -89,11 +89,13 @@ official **ShapeNetViPC** dataset. Please refer to the official ShapeNetViPC rep
 
 ## Generate Prior Point Clouds(Trellis)
 
+Prior point clouds generated with Microsoft TRELLIS are saved under the following directory structure:
+
 ```text
 /path/to/ShapeNetViPC-Dataset/ShapeNetViPC-Gen/trellis/<sampling_method>/num_points_<N>/
 ```
 
-You can generate them in batch with `generate_point_cloud.py`:
+You can generate them with `generate_point_cloud.py`:
 
 ```bash
 python generate_point_cloud.py \
@@ -174,7 +176,6 @@ output/
     ├── configs/       # a snapshot of the config used for this run
     └── logs/          # TensorBoard logs
 ```
-
 
 ## Pretrained Checkpoints
 
