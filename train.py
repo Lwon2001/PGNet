@@ -1,4 +1,6 @@
 # coding=utf-8
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2025 SYSU/Wang Luo
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-C', '--config', type=str, default='configs/default.yaml',

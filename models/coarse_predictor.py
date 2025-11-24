@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2025 SYSU/Wang Luo
+
 import torch
 import torch.nn as nn
 from utils.modules import MLP_Res, PointShuffle, cross_attention

@@ -12,6 +12,10 @@
   <a href="https://huggingface.co/datasets/Wang131/PGNet_ckpt">
     <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoints-orange" alt="Hugging Face Checkpoints">
   </a>
+  <!-- License -->
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache-2.0">
+  </a>
 </p>
 
 ## Overview
@@ -217,6 +221,14 @@ please consider citing us:
   year={2025}
 }
 ```
+
+## License
+
+This project is licensed under the Apache License, Version 2.0.
+
+- Copyright (c) 2025
+  SYSU/Wang Luo
+- See `LICENSE` for the full license text and `NOTICE` for attributions.
 
 ## Acknowledgements
 
