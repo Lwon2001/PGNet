@@ -1,20 +1,22 @@
 <h2 align="center">Rethinking Multimodal Point Cloud Completion: <br/>A Completion-by-Correction Perspective</h2>
 <p align="center">
-  <!-- TODO: Replace with the real arXiv link -->
-  <a href="https://arxiv.org/abs/XXXX.XXXXX">
+  <!-- arXiv paper -->
+  <a href="https://arxiv.org/abs/2511.12170">
     <img src="https://img.shields.io/badge/arXiv-Paper-red?logo=arxiv&logoColor=white" alt="arXiv">
   </a>
-  <!-- TODO: Replace with the real Hugging Face Demo link -->
-  <a href="https://huggingface.co/spaces/XXX/XXX">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Live_Demo-blue" alt="Hugging Face">
+  <!-- Hugging Face: dataset -->
+  <a href="https://huggingface.co/datasets/Wang131/ShapeNetViPC-Gen">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-blue" alt="Hugging Face Dataset">
+  </a>
+  <!-- Hugging Face: checkpoints -->
+  <a href="https://huggingface.co/datasets/Wang131/PGNet_ckpt">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoints-orange" alt="Hugging Face Checkpoints">
   </a>
 </p>
 
-
-
 ## Overview
 
-We propose PGNet, a multimodal point cloud completion framework that shifts from the traditional Completion-by-Inpainting paradigm to a more robust Completion-by-Correction strategy. Instead of synthesizing missing geometry from fused features, PGNet starts with a topologically complete generative prior (via an image-to-3D model) and corrects it using partial point cloud observations. By grounding a complete scaffold with reliable geometric cues, PGNet achieves state-of-the-art performance on ShapeNet-ViPC with significantly improved structural consistency and geometric fidelity.
+This repository contains the official implementation for "Rethinking Multimodal Point Cloud Completion: A Completion-by-Correction Perspective" (AAAI 2026), which introduces PGNet — a multimodal point cloud completion framework that shifts from the traditional Completion-by-Inpainting paradigm to a more robust Completion-by-Correction strategy. Instead of synthesizing missing geometry from fused features, PGNet starts with a topologically complete generative prior (via an image-to-3D model) and corrects it using partial point cloud observations. By grounding a complete scaffold with reliable geometric cues, PGNet achieves state-of-the-art performance on ShapeNet-ViPC with significantly improved structural consistency and geometric fidelity.
 
 The main components of this repo include:
 
@@ -22,7 +24,6 @@ The main components of this repo include:
 - `train.py` / `train.sh`: train MMPC models on ShapeNetViPC;
 - `inference.py`: perform category-level evaluation on the test set (Chamfer-L2 / F-Score / EMD);
 - `utils`, `metrics`, `models`, `extensions`: data loading, evaluation metrics, network architectures and CUDA extensions.
-
 
 ## Environment
 
@@ -69,6 +70,7 @@ pip install .
 
 We train and evaluate on the **ShapeNetViPC** dataset.  
 Assume the dataset root is:
+
 ```text
 ./data/ShapeNetViPC-Dataset
 ├── ShapeNetViPC-Gen              # generated point clouds from image-to-3D model (.pt)
@@ -78,6 +80,7 @@ Assume the dataset root is:
 ├── train_list.txt                # train split file list
 └── test_list.txt                 # test  split file list
 ```
+
 **`ShapeNetViPC-Gen`** contains prior point clouds generated in **this work** by applying an image-to-3D model to the rendered views in `ShapeNetViPC-View`. We also provide our pre-generated prior point clouds using Trellis at our Hugging Face dataset [`Wang131/ShapeNetViPC-Gen`](https://huggingface.co/datasets/Wang131/ShapeNetViPC-Gen).
 
 **`ShapeNetViPC-Partial`**, **`ShapeNetViPC-GT`**, **`ShapeNetViPC-View`**,  
@@ -155,6 +158,13 @@ Important training-related configs are all in the YAML file, e.g.:
 - `training.max_steps` / `training.eval_steps`: max training steps & eval interval;
 - `output.base_path`: root directory for all experiment outputs (default `output`).
 
+#### GPU memory and gradient accumulation
+
+- If you run into OOM (out of memory), increase `training.gradient_accumulation_steps` first.
+- Keep `training.global_batch_size` unchanged to preserve the same optimization dynamics; changing it alters the effective batch size and can lead to different training results.
+- The per-GPU physical batch size is computed as `global_batch_size // (gradient_accumulation_steps * WORLD_SIZE)` (see `train.py`). Here, `WORLD_SIZE` is the total number of participating GPUs/processes; in our single-node `train.sh` examples, `WORLD_SIZE == --gpu_num`.
+- Ensure `global_batch_size % (gradient_accumulation_steps * WORLD_SIZE) == 0`.
+
 After training, the default output structure looks like:
 
 ```text
@@ -170,10 +180,7 @@ output/
 
 We provide pretrained PGNet checkpoints on Hugging Face:
 
-- PGNet checkpoints dataset: [`Wang131/PGNet_ckpt`](https://huggingface.co/datasets/Wang131/PGNet_ckpt)
-
-```
-
+PGNet checkpoints dataset: [`Wang131/PGNet_ckpt`](https://huggingface.co/datasets/Wang131/PGNet_ckpt)
 
 ## Evaluation / Inference
 
@@ -196,28 +203,31 @@ python inference.py \
 The script will iterate over all samples listed in `test_list.txt`,
 compute per-sample metrics, and print the averaged results.
 
-
 ## Citation
 
 If you find this repository or our paper helpful for your research,
-please consider citing us (placeholder BibTeX below, to be updated later):
+please consider citing us:
 
 ```bibtex
-@inproceedings{MMPC2026,
-  title     = {Rethinking Multimodal Point Cloud Completion: A Completion-by-Correction Perspective},
-  author    = {Author1 and Author2 and Others},
-  booktitle = {AAAI Conference on Artificial Intelligence},
-  year      = {2026}
+@article{luo2025rethinking,
+  title={Rethinking Multimodal Point Cloud Completion: A Completion-by-Correction Perspective},
+  author={Luo, Wang and Wu, Di and Na, Hengyuan and Zhu, Yinlin and Hu, Miao and Quan, Guocong},
+  journal={arXiv preprint arXiv:2511.12170},
+  year={2025}
 }
 ```
 
 ## Acknowledgements
 
-This project is built upon several excellent works and open-source projects, including:
+This project primarily uses code from the following repositories:
 
-- the ShapeNetViPC dataset and its baselines;
-- Microsoft Trellis (`microsoft/TRELLIS-image-large`);
+- ViPC (View-Guided Point Cloud Completion): https://github.com/Hydrogenion/ViPC
+- PoinTr (Diverse Point Cloud Completion with Geometry-Aware Transformers): https://github.com/yuxumin/PoinTr
+- Microsoft TRELLIS (microsoft/TRELLIS-image-large): https://github.com/microsoft/TRELLIS
+- FSC (FSC: Few-point Shape Completion): https://github.com/xianzuwu/FSC
+
+We also acknowledge:
+
 - PointNet++ and related CUDA extensions;
-- and many other 3D / vision / deep learning open-source libraries.
 
 If you encounter issues or find bugs, feel free to open an Issue or submit a Pull Request.
